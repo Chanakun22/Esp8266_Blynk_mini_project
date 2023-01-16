@@ -48,7 +48,7 @@ BLYNK_CONNECTED() {
 BLYNK_WRITE(V3){
   int value = param.asInt();
   // digitalWrite(D0,!value);
-  Firebase.setInt(firebaseData, "/state", value);
+  Firebase.setInt(firebaseData, "/state/Status_blynk_ledV3", value);
   digitalWrite(D0,!value);
 }
 
