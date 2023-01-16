@@ -32,7 +32,7 @@ FirebaseData firebaseData;
 bool state = false;
 
 BLYNK_CONNECTED() {
-  if(Firebase.getInt(firebaseData, "/state")) {
+  if(Firebase.getInt(firebaseData, "/state/Status_blynk_ledV3")) {
     int val = firebaseData.intData();
     Blynk.virtualWrite(V4, val);
     Blynk.virtualWrite(V3, val);
