@@ -85,7 +85,7 @@ void loop() {
     //     Serial.println("Error : " + firebaseData.errorReason());
     // }
 
-  if(Firebase.getInt(firebaseData, "/state")) {
+  if(Firebase.getInt(firebaseData, "/state/Status_blynk_ledV3")) {
     int val = firebaseData.intData();
     Blynk.virtualWrite(V4, val);
   } 
