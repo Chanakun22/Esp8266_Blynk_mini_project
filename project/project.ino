@@ -28,7 +28,8 @@ int LED_PIN = D0;
 /* Use software serial for the PZEM
  * Pin 12 Rx (Connects to the Tx pin on the PZEM)
  * Pin 13 Tx (Connects to the Rx pin on the PZEM)
-*/
+ e
+*/ 
 #if !defined(PZEM_RX_PIN) && !defined(PZEM_TX_PIN)
 #define PZEM_RX_PIN D5
 #define PZEM_TX_PIN D6
@@ -119,7 +120,7 @@ void loop() {
 
     // Check if the data is valid
     if(isnan(voltage)){
-        Blynk.logEvent("alert", "Error reading current") ;
+        Blynk.logEvent("alert", "Error reading current");
     } else if (isnan(current)) {
         Serial.println("Error reading current");
     } else if (isnan(power)) {
