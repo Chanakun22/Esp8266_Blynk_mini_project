@@ -41,7 +41,12 @@ PZEM004Tv30 pzem(pzemSWSerial);
 bool t = true;
 FirebaseData firebaseData;
 bool state = false;
-
+WidgetLED led1(V7);
+#define BLYNK_GREEN     "#23C48E"
+#define BLYNK_BLUE      "#04C0F8"
+#define BLYNK_YELLOW    "#ED9D00"
+#define BLYNK_RED       "#D3435C"
+#define BLYNK_DARK_BLUE "#5F7CD8"
 
 
 
@@ -122,6 +127,8 @@ void loop() {
     // Check if the data is valid
     if(isnan(voltage)){
         Blynk.logEvent("alert", "Error reading current");
+        // Blynk.virtualWrite(V7, 0);
+        led1.setColor(BLYNK_RED);
     } else if (isnan(current)) {
         Serial.println("Error reading current");
     } else if (isnan(power)) {
@@ -134,6 +141,8 @@ void loop() {
         Serial.println("Error reading power factor");
     } else {
       
+      // Blynk.virtualWrite(V7, 1);
+      led1.setColor(BLYNK_GREEN);
       // Print the values to the Serial console
       Blynk.virtualWrite(V0, voltage);
       Blynk.virtualWrite(V1, current);
