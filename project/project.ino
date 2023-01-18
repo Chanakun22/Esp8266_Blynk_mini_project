@@ -9,6 +9,7 @@
 ///
 /////////Fire base//////////
 int LED_PIN = D0;
+
 // Uncomment your board, or configure a custom board in Settings.h
 //#define USE_SPARKFUN_BLYNK_BOARD
 //#define USE_NODE_MCU_BOARD
@@ -36,7 +37,7 @@ int LED_PIN = D0;
 #endif
 SoftwareSerial pzemSWSerial(PZEM_RX_PIN, PZEM_TX_PIN);
 PZEM004Tv30 pzem(pzemSWSerial);
-
+ 
 bool t = true;
 FirebaseData firebaseData;
 bool state = false;
@@ -108,7 +109,8 @@ void loop() {
   }
 
       Serial.print("Custom Address:");
-    Serial.println(pzem.readAddress(), HEX);
+    //   Serial.print("Custom Address:");
+    // Serial.println(pzem.readAddress(), HEX);
 
     // Read the data from the sensor
     float voltage = pzem.voltage();
@@ -140,11 +142,11 @@ void loop() {
       Blynk.virtualWrite(V5, energy);
       Blynk.virtualWrite(V6, frequency);
       // Serial.print("Voltage: ");      Serial.print(voltage);      Serial.println("V");
-      // Serial.print("Current: ");      Serial.print(current);      Serial.println("A");
-      // Serial.print("Power: ");        Serial.print(power);        Serial.println("W");
+      //  Serial.print("Current: ");      Serial.print(current);      Serial.println("A");
+      //  Serial.print("Power: ");        Serial.print(power);        Serial.println("W");
       // Serial.print("Energy: ");       Serial.print(energy,3);     Serial.println("kWh");
-      // Serial.print("Frequency: ");    Serial.print(frequency, 1); Serial.println("Hz");
-      // Serial.print("PF: ");           Serial.println(pf);
+      //  Serial.print("Frequency: ");    Serial.print(frequency, 1); Serial.println("Hz");
+      //  Serial.print("PF: ");           Serial.println(pf);
     }
 
 
