@@ -108,8 +108,7 @@ void loop() {
     Serial.println("Error : " + firebaseData.errorReason());
   }
 
-      Serial.print("Custom Address:");
-    //   Serial.print("Custom Address:");
+    //Serial.print("Custom Address:");
     // Serial.println(pzem.readAddress(), HEX);
 
     // Read the data from the sensor
