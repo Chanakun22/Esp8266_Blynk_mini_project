@@ -4,5 +4,7 @@
 
 #Rx => D6 || TX=> D5
 
+#add lcd 
+
 
 
