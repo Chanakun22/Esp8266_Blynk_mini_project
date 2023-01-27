@@ -59,6 +59,7 @@ BLYNK_CONNECTED() {
     Blynk.virtualWrite(V4, val);
     Blynk.virtualWrite(V3, val);
     digitalWrite(D0,!val);
+    digitalWrite(D4,!val);
   } 
   else {
     Serial.println("Error : " + firebaseData.errorReason());
@@ -72,6 +73,7 @@ BLYNK_WRITE(V3){
   // digitalWrite(D0,!value);
   Firebase.setInt(firebaseData, "/state/Status_blynk_ledV3", value);
   digitalWrite(D0,!value);
+  digitalWrite(D4,!value);
 }
 
 
@@ -83,6 +85,7 @@ void setup()
   Serial.begin(115200);
   delay(100);
   pinMode(D0,OUTPUT);
+  pinMode(D4,OUTPUT);
   BlynkEdgent.begin();
   Firebase.begin(FIREBASE_HOST, FIREBASE_KEY);
 
