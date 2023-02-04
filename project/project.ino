@@ -143,6 +143,11 @@ void loop() {
           lcd.clear();
           lcd.setCursor(5,1);
           lcd.print("Sensor Eror");
+          Blynk.virtualWrite(V0, 0);
+          Blynk.virtualWrite(V1, 0);
+          Blynk.virtualWrite(V2, 0);
+          Blynk.virtualWrite(V5, 0);
+          Blynk.virtualWrite(V6, 0);
         }
         
     } else if (isnan(current)) {
@@ -168,9 +173,9 @@ void loop() {
       lcd.setCursor(0,0);
       lcd.print("Vlotage: "+String(voltage)+" V ");
       lcd.setCursor(0,1);
-      lcd.print("Current: "+String(current)+" A      ");
+      lcd.print("Current: "+String(current)+" A     ");
       lcd.setCursor(0,2);
-      lcd.print("Power:   "+String(power)+" W     ");
+      lcd.print("Power:   "+String(power)+" W    ");
       lcd.setCursor(0,3);
       lcd.print("energy:  "+String(energy)+" Kwh   ");
       // Serial.print("Voltage: ");      Serial.print(voltage);      Serial.println("V");
