@@ -170,7 +170,7 @@ void loop() {
       lcd.setCursor(0,1);
       lcd.print("Current: "+String(current)+" A      ");
       lcd.setCursor(0,2);
-      lcd.print("Power:   "+String(power)+" W      ");
+      lcd.print("Power:   "+String(power)+" W     ");
       lcd.setCursor(0,3);
       lcd.print("energy:  "+String(energy)+" Kwh   ");
       // Serial.print("Voltage: ");      Serial.print(voltage);      Serial.println("V");
