@@ -25,7 +25,6 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
 #define FIREBASE_KEY "8rC32YDSJr5hJCDjIRk9CHvPpmXOAV5DvGXpHpmP"
 #include <PZEM004Tv30.h>
 #include <SoftwareSerial.h>
-
 #if defined(ESP32)
     #error "Software Serial is not supported on the ESP32"
 #endif
@@ -35,6 +34,7 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
  * Pin 13 Tx (Connects to the Rx pin on the PZEM)
  e
 */ 
+
 #if !defined(PZEM_RX_PIN) && !defined(PZEM_TX_PIN)
 #define PZEM_RX_PIN D5
 #define PZEM_TX_PIN D6
@@ -51,6 +51,9 @@ WidgetLED led1(V7);
 #define BLYNK_YELLOW    "#ED9D00"
 #define BLYNK_RED       "#D3435C"
 #define BLYNK_DARK_BLUE "#5F7CD8"
+
+
+BlynkTimer timer; 
 
 
 
@@ -92,7 +95,7 @@ void setup()
   pinMode(D4,OUTPUT);
   BlynkEdgent.begin();
   Firebase.begin(FIREBASE_HOST, FIREBASE_KEY);
-
+  timer.setInterval(50L, mysensor);
 
 
 }
@@ -122,7 +125,13 @@ void loop() {
     Serial.println("Error : " + firebaseData.errorReason());
   }
 
-    //Serial.print("Custom Address:");
+}
+
+
+
+
+void mysensor(){
+      //Serial.print("Custom Address:");
     // Serial.println(pzem.readAddress(), HEX);
 
     // Read the data from the sensor
@@ -185,10 +194,6 @@ void loop() {
       //  Serial.print("Frequency: ");    Serial.print(frequency, 1); Serial.println("Hz");
       //  Serial.print("PF: ");           Serial.println(pf);
     }
-
-
-delay(5);
 }
-
 
 
