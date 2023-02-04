@@ -11,12 +11,14 @@
 ///e
 /////////Fire base//////////
 int LED_PIN = D0;
-
 // Uncomment your board, or configure a custom board in Settings.h
 //#define USE_SPARKFUN_BLYNK_BOARD
 //#define USE_NODE_MCU_BOARD
 //#define USE_WITTY_CLOUD_BOARD
-//#define USE_WEMOS_D1_MINI
+#define USE_WEMOS_D1_MINI
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 #include "BlynkEdgent.h"
 #include <FirebaseESP8266.h>
 #define FIREBASE_HOST "projecy-31eb8-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -58,7 +60,7 @@ BLYNK_CONNECTED() {
     int val = firebaseData.intData();
     Blynk.virtualWrite(V4, val);
     Blynk.virtualWrite(V3, val);
-    digitalWrite(D0,!val);
+    digitalWrite(LED_PIN,!val);
     digitalWrite(D4,!val);
   } 
   else {
@@ -72,7 +74,7 @@ BLYNK_WRITE(V3){
   int value = param.asInt();
   // digitalWrite(D0,!value);
   Firebase.setInt(firebaseData, "/state/Status_blynk_ledV3", value);
-  digitalWrite(D0,!value);
+  digitalWrite(LED_PIN,!value);
   digitalWrite(D4,!value);
 }
 
@@ -81,10 +83,12 @@ BLYNK_WRITE(V3){
 
 void setup()
 {
-  
+    
+  lcd.begin();
+  lcd.backlight();
   Serial.begin(115200);
   delay(100);
-  pinMode(D0,OUTPUT);
+  pinMode(LED_PIN,OUTPUT);
   pinMode(D4,OUTPUT);
   BlynkEdgent.begin();
   Firebase.begin(FIREBASE_HOST, FIREBASE_KEY);
@@ -131,9 +135,16 @@ void loop() {
 
     // Check if the data is valid
     if(isnan(voltage)){
-        Blynk.logEvent("alert", "Error reading current");
+    Blynk.logEvent("alert", "Error reading current");
         // Blynk.virtualWrite(V7, 0);
         led1.setColor(BLYNK_RED);
+        if(t){
+          t=false;
+          lcd.clear();
+          lcd.setCursor(5,1);
+          lcd.print("Sensor Eror");
+        }
+        
     } else if (isnan(current)) {
         Serial.println("Error reading current");
     } else if (isnan(power)) {
@@ -145,7 +156,7 @@ void loop() {
     } else if (isnan(pf)) {
         Serial.println("Error reading power factor");
     } else {
-      
+      t=true;
       // Blynk.virtualWrite(V7, 1);
       led1.setColor(BLYNK_GREEN);
       // Print the values to the Serial console
@@ -154,6 +165,14 @@ void loop() {
       Blynk.virtualWrite(V2, power);
       Blynk.virtualWrite(V5, energy);
       Blynk.virtualWrite(V6, frequency);
+      lcd.setCursor(0,0);
+      lcd.print("Vlotage: "+String(voltage)+" V ");
+      lcd.setCursor(0,1);
+      lcd.print("Current: "+String(current)+" A   ");
+      lcd.setCursor(0,2);
+      lcd.print("Power: "+String(power)+" W     ");
+      lcd.setCursor(0,3);
+      lcd.print("energy: "+String(energy)+" Kwh   ");
       // Serial.print("Voltage: ");      Serial.print(voltage);      Serial.println("V");
       //  Serial.print("Current: ");      Serial.print(current);      Serial.println("A");
       //  Serial.print("Power: ");        Serial.print(power);        Serial.println("W");
@@ -163,7 +182,7 @@ void loop() {
     }
 
 
-
+delay(5);
 }
 
 
