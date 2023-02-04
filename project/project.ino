@@ -95,17 +95,10 @@ void setup()
   pinMode(D4,OUTPUT);
   BlynkEdgent.begin();
   Firebase.begin(FIREBASE_HOST, FIREBASE_KEY);
-  timer.setInterval(50L, mysensor);
+  
 
 
 }
-
-
-
-
-
-
-
 
 
 void loop() {
@@ -125,13 +118,9 @@ void loop() {
     Serial.println("Error : " + firebaseData.errorReason());
   }
 
-}
 
 
-
-
-void mysensor(){
-      //Serial.print("Custom Address:");
+        //Serial.print("Custom Address:");
     // Serial.println(pzem.readAddress(), HEX);
 
     // Read the data from the sensor
@@ -194,6 +183,11 @@ void mysensor(){
       //  Serial.print("Frequency: ");    Serial.print(frequency, 1); Serial.println("Hz");
       //  Serial.print("PF: ");           Serial.println(pf);
     }
+delay(10);
 }
+
+
+
+
 
 
