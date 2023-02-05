@@ -27,10 +27,12 @@ float pf;
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-LiquidCrystal_I2C lcd(0x27, 20, 4);
 #include "BlynkEdgent.h"
 #include <PZEM004Tv30.h>
 #include <SoftwareSerial.h>
+PZEM004Tv30 pzem(D5, D6);
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+
 #if defined(ESP32)
     #error "Software Serial is not supported on the ESP32"
 #endif
@@ -55,7 +57,7 @@ WidgetLED led1(V7);
 
 BlynkTimer timer; 
 
-PZEM004Tv30 pzem(D5, D6);
+
 
 
 
@@ -99,6 +101,8 @@ void clearlcd(){
 }
 
 
+
+
 void readsensor(){
   
   if(lcd_clear){
@@ -117,7 +121,7 @@ void readsensor(){
     pf = pzem.pf();
 
     // Check if the data is valid
-    if(isnan(voltage)){
+    if(isnan(voltage) && isnan(current) && isnan(power) && isnan(energy) && isnan(frequency) && isnan(pf)){
     Blynk.logEvent("alert", "Error reading sensor");
         // Blynk.virtualWrite(V7, 0);
         led1.setColor(BLYNK_RED);
@@ -134,59 +138,8 @@ void readsensor(){
           Blynk.virtualWrite(V6, 0);
         }
         
-    } else if (isnan(current)) {
-          Blynk.logEvent("alert", "Error reading current");
-        // Blynk.virtualWrite(V7, 0);
-        led1.setColor(BLYNK_RED);
-        if(t){
-          t=false;
-          error_ = true;
-          lcd.clear();
-          lcd.setCursor(0,1);
-          lcd.print("Error reading sensor");
-          Blynk.virtualWrite(V0, 0);
-          Blynk.virtualWrite(V1, 0);
-          Blynk.virtualWrite(V2, 0);
-          Blynk.virtualWrite(V5, 0);
-          Blynk.virtualWrite(V6, 0);
-        }
-    } else if (isnan(power)) {
-          Blynk.logEvent("alert", "Error reading current");
-        // Blynk.virtualWrite(V7, 0);
-        led1.setColor(BLYNK_RED);
-        if(t){
-          t=false;
-          error_ = true;
-          lcd.clear();
-          lcd.setCursor(0,1);
-          lcd.print("Error reading sensor");
-          Blynk.virtualWrite(V0, 0);
-          Blynk.virtualWrite(V1, 0);
-          Blynk.virtualWrite(V2, 0);
-          Blynk.virtualWrite(V5, 0);
-          Blynk.virtualWrite(V6, 0);
-        }
-    } else if (isnan(energy)) {
-          Blynk.logEvent("alert", "Error reading current");
-        // Blynk.virtualWrite(V7, 0);
-        led1.setColor(BLYNK_RED);
-        if(t){
-          t=false;
-          error_ = true;
-          lcd.clear();
-          lcd.setCursor(2,1);
-          lcd.print("Error reading sensor");
-          Blynk.virtualWrite(V0, 0);
-          Blynk.virtualWrite(V1, 0);
-          Blynk.virtualWrite(V2, 0);
-          Blynk.virtualWrite(V5, 0);
-          Blynk.virtualWrite(V6, 0);
-        }
-    } else if (isnan(frequency)) {
-        Serial.println("Error reading frequency");
-    } else if (isnan(pf)) {
-        Serial.println("Error reading power factor");
-    } else {
+    }
+     else {
       if(error_){
         error_ = false;
         lcd.clear();
@@ -208,12 +161,6 @@ void readsensor(){
       lcd.print("Power:   "+String(power)+" W  ");
       lcd.setCursor(0,3);
       lcd.print("energy:  "+String(energy)+" Kwh  ");
-      // Serial.print("Voltage: ");      Serial.print(voltage);      Serial.println("V");
-      //  Serial.print("Current: ");      Serial.print(current);      Serial.println("A");
-      //  Serial.print("Power: ");        Serial.print(power);        Serial.println("W");
-      // Serial.print("Energy: ");       Serial.print(energy,3);     Serial.println("kWh");
-      //  Serial.print("Frequency: ");    Serial.print(frequency, 1); Serial.println("Hz");
-      //  Serial.print("PF: ");           Serial.println(pf);
     }
 }
 
