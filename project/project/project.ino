@@ -4,7 +4,7 @@
 #define BLYNK_DEVICE_NAME "Chanakun Project"
 
 
-#define BLYNK_FIRMWARE_VERSION        "0.1.1"
+#define BLYNK_FIRMWARE_VERSION        "0.1.5"
 #define BLYNK_PRINT Serial
 //#define BLYNK_DEBUG
 #define APP_DEBUG
@@ -19,8 +19,6 @@ float power;
 float energy;
 float frequency; 
 float pf;
-unsigned long period = 1000; //ระยะเวลาที่ต้องการรอ
-unsigned long last_time = 0; //ประกาศตัวแปรเป็น global เพื่อเก็บค่าไว้ไม่ให้ reset จากการวนloop
 // Uncomment your board, or configure a custom board in Settings.h
 //#define USE_SPARKFUN_BLYNK_BOARD
 //#define USE_NODE_MCU_BOARD
@@ -41,7 +39,16 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
  * Pin 13 Tx (Connects to the Rx pin on the PZEM)
  e
 */ 
-
+byte customChar[] = {
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111
+};
 
  
 bool t = true;
@@ -79,11 +86,12 @@ void setup()
   lcd.backlight();
   lcd.setCursor(0,0);
   lcd.print("Connect Wifi..");
-  timer.setInterval(3000L,readsensor);
+  timer.setInterval(2600L,readsensor);
   timer.setInterval(60000L,clearlcd);
   Serial.begin(115200);
   pinMode(D3,INPUT_PULLUP);
   BlynkEdgent.begin();
+  lcd.createChar(0, customChar);
   
 
 
@@ -156,22 +164,36 @@ void readsensor(){
 
     if(isnan(voltage) || isnan(current) || isnan(power) || isnan(energy) || isnan(frequency) || isnan(pf)){
     Blynk.logEvent("alert", "Error reading sensor");
-        // Blynk.virtualWrite(V7, 0);
         led1.setColor(BLYNK_RED);
         if(t){
           t=false;
           error_ = true;
           lcd.clear();
-          lcd.setCursor(0,1);
-          lcd.print("Error reading sensor");
+          lcd.setCursor(0,0);
+          lcd.print("Error Read");
           Blynk.virtualWrite(V0, 0);
           Blynk.virtualWrite(V1, 0);
           Blynk.virtualWrite(V2, 0);
           Blynk.virtualWrite(V5, 0);
           Blynk.virtualWrite(V6, 0);
+
+
+
+          for(int j = 0; j < 16; j++){
+          lcd.setCursor(j,1);
+          lcd.write(0);
+          delay(300);
+
+        }
+        for(int j = 0; j < 16; j++){
+          lcd.setCursor(j,1);
+          lcd.print(" ");
+          delay(300);
+        }
         }
   }
   else{
+    t=true;
       Blynk.virtualWrite(V7, 1);
       led1.setColor(BLYNK_GREEN);
       Blynk.virtualWrite(V0, voltage);
@@ -183,13 +205,13 @@ void readsensor(){
       lcd.setCursor(0,0);
       lcd.print("V: "+String(voltage)+" V  ");
       lcd.setCursor(0,1);
-      lcd.print("A: "+String(current)+" A    ");
+      lcd.print("A: "+String(current)+" A     ");
     }
     else{
       lcd.setCursor(0,0);
       lcd.print("W: "+String(power)+" W  ");
       lcd.setCursor(0,1);
-      lcd.print("Whr: "+String(energy)+" Whr  ");
+      lcd.print("Whr: "+String(energy)+" Whr   ");
     }
   }
 
