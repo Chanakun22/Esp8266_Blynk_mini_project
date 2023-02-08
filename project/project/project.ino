@@ -31,7 +31,7 @@ float pf;
 #include <PZEM004Tv30.h>
 #include <SoftwareSerial.h>
 PZEM004Tv30 pzem(D5, D6);
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 
 /* Use software serial for the PZEM
@@ -86,7 +86,7 @@ void setup()
   lcd.backlight();
   lcd.setCursor(0,0);
   lcd.print("Connect Wifi..");
-  timer.setInterval(2600L,readsensor);
+  timer.setInterval(1500L,readsensor);
   timer.setInterval(60000L,clearlcd);
   Serial.begin(115200);
   pinMode(D3,INPUT_PULLUP);
@@ -105,55 +105,8 @@ void clearlcd(){
 
 
 
-// void readsensor(){
-  
-//   if(lcd_clear){
-//     lcd_clear = false;
-//     lcd.clear();
-//   }
-//         //Serial.print("Custom Address:");
-//     // Serial.println(pzem.readAddress(), HEX);
-
-//     // Read the data from the sensor
-//     voltage = pzem.voltage();
-//     current = pzem.current();
-//     power = pzem.power();
-//     energy = pzem.energy();
-//     frequency = pzem.frequency();
-//     pf = pzem.pf();
-
-//     // Check if the data is valid
-//     if(isnan(voltage) || isnan(current) || isnan(power) || isnan(energy) || isnan(frequency) || isnan(pf)){
-//     Blynk.logEvent("alert", "Error reading sensor");
-//         // Blynk.virtualWrite(V7, 0);
-//         led1.setColor(BLYNK_RED);
-//         if(t){
-//           t=false;
-//           error_ = true;
-//           lcd.clear();
-//           lcd.setCursor(0,1);
-//           lcd.print("Error reading sensor");
-//           Blynk.virtualWrite(V0, 0);
-//           Blynk.virtualWrite(V1, 0);
-//           Blynk.virtualWrite(V2, 0);
-//           Blynk.virtualWrite(V5, 0);
-//           Blynk.virtualWrite(V6, 0);
-//         }
-        
-//     }
-//      else {
-//       if(error_){
-//         error_ = false;
-//         lcd.clear();
-//       }
-//       t=true;
-
-//     }
-// }
-
 
 void readsensor(){
-  lcd_switch = !lcd_switch;
 
     voltage = pzem.voltage();
     current = pzem.current();
@@ -164,7 +117,19 @@ void readsensor(){
 
     if(isnan(voltage) || isnan(current) || isnan(power) || isnan(energy) || isnan(frequency) || isnan(pf)){
     Blynk.logEvent("alert", "Error reading sensor");
+    for(int j = 0; j < 16; j++){
+          lcd.setCursor(j,1);
+          lcd.write(0);
+          delay(300);
+
+        }
+    for(int j = 0; j < 16; j++){
+          lcd.setCursor(j,1);
+          lcd.print(" ");
+          delay(300);
+        }
         led1.setColor(BLYNK_RED);
+
         if(t){
           t=false;
           error_ = true;
@@ -179,17 +144,7 @@ void readsensor(){
 
 
 
-          for(int j = 0; j < 16; j++){
-          lcd.setCursor(j,1);
-          lcd.write(0);
-          delay(300);
 
-        }
-        for(int j = 0; j < 16; j++){
-          lcd.setCursor(j,1);
-          lcd.print(" ");
-          delay(300);
-        }
         }
   }
   else{
@@ -201,18 +156,14 @@ void readsensor(){
       Blynk.virtualWrite(V2, power);
       Blynk.virtualWrite(V5, energy);
       Blynk.virtualWrite(V6, frequency);
-    if(lcd_switch){
       lcd.setCursor(0,0);
-      lcd.print("V: "+String(voltage)+" V  ");
+      lcd.print("Voltage: "+String(voltage)+" V  ");
       lcd.setCursor(0,1);
-      lcd.print("A: "+String(current)+" A     ");
-    }
-    else{
-      lcd.setCursor(0,0);
-      lcd.print("W: "+String(power)+" W  ");
-      lcd.setCursor(0,1);
-      lcd.print("Whr: "+String(energy)+" Whr   ");
-    }
+      lcd.print("Current: "+String(current)+" A     ");
+      lcd.setCursor(0,2);
+      lcd.print("Power: "+String(power)+" W  ");
+      lcd.setCursor(0,3);
+      lcd.print("Energy: "+String(energy)+" Whr   ");
   }
 
 }
