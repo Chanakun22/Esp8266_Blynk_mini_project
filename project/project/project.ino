@@ -4,7 +4,7 @@
 #define BLYNK_DEVICE_NAME "Chanakun Project"
 
 
-#define BLYNK_FIRMWARE_VERSION        "0.1.8"
+#define BLYNK_FIRMWARE_VERSION        "0.1.9"
 #define BLYNK_PRINT Serial
 //#define BLYNK_DEBUG
 #define APP_DEBUG
@@ -125,7 +125,7 @@ void readsensor(){
           lcd.print("Error Read");
           lcd.setCursor(j,1);
           lcd.write(0);
-          delay(300);
+          delay(100);
 
         }
     for(int j = 0; j < 20; j++){
@@ -133,7 +133,7 @@ void readsensor(){
           lcd.print("Error Read");
           lcd.setCursor(j,1);
           lcd.print(" ");
-          delay(300);
+          delay(100);
         }
         led1.setColor(BLYNK_RED);
 
