@@ -4,21 +4,21 @@
 #define BLYNK_DEVICE_NAME "Chanakun Project"
 
 
-#define BLYNK_FIRMWARE_VERSION        "0.1.5"
+#define BLYNK_FIRMWARE_VERSION        "0.1.8"
 #define BLYNK_PRINT Serial
 //#define BLYNK_DEBUG
 #define APP_DEBUG
 ///e
 /////////Fire base//////////
-bool lcd_clear = false;
 bool error_ = true;
-bool lcd_switch = true;
+int limit_amp;
 float voltage;
 float current;
 float power;
 float energy;
 float frequency; 
 float pf;
+int relay = D8; 
 // Uncomment your board, or configure a custom board in Settings.h
 //#define USE_SPARKFUN_BLYNK_BOARD
 //#define USE_NODE_MCU_BOARD
@@ -68,15 +68,21 @@ BlynkTimer timer;
 
 BLYNK_CONNECTED() {
   lcd.clear();
-  lcd.begin();
-  lcd.backlight();
+  Blynk.virtualWrite(V8, 0);
+}
+
+
+BLYNK_WRITE(V8){
+  limit_amp = param.asInt();
 }
 
 
 
 
-
-
+BLYNK_WRITE(V4){
+  int val =  param.asInt();
+  digitalWrite(relay,val);
+}
 
 
 
@@ -85,9 +91,9 @@ void setup()
   lcd.begin();
   lcd.backlight();
   lcd.setCursor(0,0);
+  pinMode(relay,OUTPUT);
   lcd.print("Connect Wifi..");
   timer.setInterval(1500L,readsensor);
-  timer.setInterval(60000L,clearlcd);
   Serial.begin(115200);
   pinMode(D3,INPUT_PULLUP);
   BlynkEdgent.begin();
@@ -98,9 +104,6 @@ void setup()
 }
 
 
-void clearlcd(){
-  lcd_clear = true;
-}
 
 
 
@@ -117,13 +120,17 @@ void readsensor(){
 
     if(isnan(voltage) || isnan(current) || isnan(power) || isnan(energy) || isnan(frequency) || isnan(pf)){
     Blynk.logEvent("alert", "Error reading sensor");
-    for(int j = 0; j < 16; j++){
+    for(int j = 0; j < 20; j++){
+          lcd.setCursor(0,0);
+          lcd.print("Error Read");
           lcd.setCursor(j,1);
           lcd.write(0);
           delay(300);
 
         }
-    for(int j = 0; j < 16; j++){
+    for(int j = 0; j < 20; j++){
+          lcd.setCursor(0,0);
+          lcd.print("Error Read");
           lcd.setCursor(j,1);
           lcd.print(" ");
           delay(300);
@@ -163,7 +170,7 @@ void readsensor(){
       lcd.setCursor(0,2);
       lcd.print("Power: "+String(power)+" W  ");
       lcd.setCursor(0,3);
-      lcd.print("Energy: "+String(energy)+" Whr   ");
+      lcd.print("Energy: "+String(energy)+" kWh   ");
   }
 
 }
@@ -174,6 +181,15 @@ void readsensor(){
 void loop() {
   BlynkEdgent.run();
   timer.run();
+
+
+
+  if(limit_amp > 0){
+    if(current > limit_amp){
+      digitalWrite(relay,LOW);
+      Blynk.virtualWrite(V4, 0);
+    }
+  }
 }
 
 
