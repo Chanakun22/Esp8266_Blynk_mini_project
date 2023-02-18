@@ -1,6 +1,13 @@
 #Board Memos D1 mini
 
 #Sensor
+
+
+
+
+
+
+
 -Pzem-004t Rx => D6 || TX=> D5
 
 
