@@ -1,10 +1,10 @@
 
 // Fill-in information from your Blynk Template here
 #define BLYNK_TEMPLATE_ID "TMPLtGsgYw0Y"
-#define BLYNK_DEVICE_NAME "Chanakun Project"
+#define BLYNK_TEMPLATE_NAME "Chanakun Project"
 
 
-#define BLYNK_FIRMWARE_VERSION        "0.1.9"
+#define BLYNK_FIRMWARE_VERSION        "0.2.0"
 #define BLYNK_PRINT Serial
 //#define BLYNK_DEBUG
 #define APP_DEBUG
@@ -69,6 +69,7 @@ BlynkTimer timer;
 BLYNK_CONNECTED() {
   lcd.clear();
   Blynk.virtualWrite(V8, 0);
+  Blynk.virtualWrite(V4, 0);
 }
 
 
