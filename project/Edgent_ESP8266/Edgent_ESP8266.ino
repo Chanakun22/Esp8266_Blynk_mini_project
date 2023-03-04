@@ -74,11 +74,11 @@ BLYNK_CONNECTED() {
   Blynk.virtualWrite(V8, 0);
   String status = Firebase.getInt(fbdo, F("/status")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str();
   int val = status.toInt();
-  Serial.println("VALLLLLLLLLLLL = " + String(val));
   relay_val = val;
   Firebase.setInt(fbdo, "/status", val);
   Blynk.virtualWrite(V4, val);
   digitalWrite(relay, val);
+  
   delay(500);
   connected_ = true;
   lcd.clear();
@@ -190,6 +190,7 @@ void loop() {
     if (current > limit_amp) {
       digitalWrite(relay, LOW);
       Blynk.virtualWrite(V4, 0);
+      Firebase.setInt(fbdo, "/status", 0);
     }
   }
 }
