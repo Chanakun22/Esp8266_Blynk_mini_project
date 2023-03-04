@@ -43,7 +43,7 @@ BlynkTimer edgentTimer;
 #include "ConfigStore.h"
 #include "ResetButton.h"
 #include "ConfigMode.h"
-#include "Indicator.h"
+// #include "Indicator.h"
 #include "OTA.h"
 #include "Console.h"
 
@@ -104,7 +104,7 @@ public:
     BLYNK_FS.begin();
 #endif
 
-    indicator_init();
+    // indicator_init();
     button_init();
     config_init();
     printDeviceBanner();
