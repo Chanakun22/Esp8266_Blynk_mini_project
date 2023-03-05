@@ -48,6 +48,8 @@ BlynkTimer edgentTimer;
 #include "Console.h"
 
 
+WidgetTerminal terminal(V9);
+//////////////  This is reboot Terminal
 void resetMCU()
 {
 #if defined(ARDUINO_ARCH_MEGAAVR)
@@ -67,6 +69,7 @@ void resetMCU()
 BLYNK_WRITE(V9) {
   if (String(param.asStr()) == "reboot") {
     Serial.println("Rebooting...");
+    terminal.println("Rebooting...");
 
     // TODO: Perform any neccessary preparation here,
     // i.e. turn off peripherals, write state to EEPROM, etc.

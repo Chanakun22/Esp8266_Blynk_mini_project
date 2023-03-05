@@ -69,7 +69,6 @@ BlynkTimer timer;
 FirebaseData fbdo;
 
 
-
 BLYNK_CONNECTED() {
   Blynk.virtualWrite(V8, 0);
   String status = Firebase.getInt(fbdo, F("/status")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str();
