@@ -4,7 +4,7 @@
 #define BLYNK_TEMPLATE_NAME "Chanakun Project"
 
 
-#define BLYNK_FIRMWARE_VERSION "0.2.5"
+#define BLYNK_FIRMWARE_VERSION "0.2.6"
 #define BLYNK_PRINT Serial
 //#define BLYNK_DEBUG
 #define APP_DEBUG
@@ -111,6 +111,10 @@ void setup() {
   BlynkEdgent.begin();
   lcd.createChar(0, customChar);
   Firebase.begin(FIREBASE_HOST, FIREBASE_KEY);
+
+
+  terminal.println(F("Blynk v" BLYNK_VERSION ": Device started"));
+  terminal.println(F("-------------"));
 }
 
 
