@@ -48,6 +48,41 @@ BlynkTimer edgentTimer;
 #include "Console.h"
 
 
+void resetMCU()
+{
+#if defined(ARDUINO_ARCH_MEGAAVR)
+  wdt_enable(WDT_PERIOD_8CLK_gc);
+#elif defined(__AVR__)
+  wdt_enable(WDTO_15MS);
+#elif defined(__arm__)
+  NVIC_SystemReset();
+#elif defined(ESP8266) || defined(ESP32)
+  ESP.restart();
+#else
+  #error "MCU reset procedure not implemented"
+#endif
+  for (;;) {}
+}
+
+BLYNK_WRITE(V9) {
+  if (String(param.asStr()) == "reboot") {
+    Serial.println("Rebooting...");
+
+    // TODO: Perform any neccessary preparation here,
+    // i.e. turn off peripherals, write state to EEPROM, etc.
+
+    // NOTE: You may need to defer a reboot,
+    // if device is in process of some critical operation.
+
+    resetMCU();
+  }
+}
+
+
+
+
+
+
 inline
 void BlynkState::set(State m) {
   if (state != m && m < MODE_MAX_VALUE) {
