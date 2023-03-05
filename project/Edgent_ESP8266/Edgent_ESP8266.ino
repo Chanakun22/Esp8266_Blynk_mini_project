@@ -4,7 +4,7 @@
 #define BLYNK_TEMPLATE_NAME "Chanakun Project"
 
 
-#define BLYNK_FIRMWARE_VERSION "0.2.6"
+#define BLYNK_FIRMWARE_VERSION "0.2.7"
 #define BLYNK_PRINT Serial
 //#define BLYNK_DEBUG
 #define APP_DEBUG
@@ -111,89 +111,88 @@ void setup() {
   BlynkEdgent.begin();
   lcd.createChar(0, customChar);
   Firebase.begin(FIREBASE_HOST, FIREBASE_KEY);
-
-
-
 }
 
 
 void read_firebase() {
-  String status = Firebase.getInt(fbdo, F("/status")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str();
-  digitalWrite(relay, status.toInt());
-}
-
-void write_firebase() {
-  if (connected_) {
-    Firebase.setInt(fbdo, "/status", relay_val);
+  if (Firebase.getInt(fbdo, "/status")) {  ///Good Code Read from fire base *******
+      int status = fbdo.intData();
+      digitalWrite(relay, status);
   }
 }
 
+  void write_firebase() {
+    if (connected_) {
+      Firebase.setInt(fbdo, "/status", relay_val);
+    }
+  }
 
 
 
-void readsensor() {
-  voltage = pzem.voltage();
-  current = pzem.current();
-  power = pzem.power();
-  energy = pzem.energy();
-  frequency = pzem.frequency();
-  pf = pzem.pf();
 
-  if (isnan(voltage) || isnan(current) || isnan(power) || isnan(energy) || isnan(frequency) || isnan(pf)) {
-    Blynk.logEvent("alert", "Error reading sensor");
-    for (int j = 0; j < 20; j++) {
+  void readsensor() {
+    voltage = pzem.voltage();
+    current = pzem.current();
+    power = pzem.power();
+    energy = pzem.energy();
+    frequency = pzem.frequency();
+    pf = pzem.pf();
+
+    if (isnan(voltage) || isnan(current) || isnan(power) || isnan(energy) || isnan(frequency) || isnan(pf)) {
+      Blynk.logEvent("alert", "Error reading sensor");
+      for (int j = 0; j < 20; j++) {
+        lcd.setCursor(0, 0);
+        lcd.print("Error Read");
+        lcd.setCursor(j, 1);
+        lcd.write(0);
+        delay(100);
+        lcd.setCursor(j - 1, 1);
+        lcd.print(" ");
+      }
+      led1.setColor(BLYNK_RED);
+      if (t) {
+        t = false;
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Error Read");
+        Blynk.virtualWrite(V0, 0);
+        Blynk.virtualWrite(V1, 0);
+        Blynk.virtualWrite(V2, 0);
+        Blynk.virtualWrite(V5, 0);
+        Blynk.virtualWrite(V6, 0);
+      }
+    } else {
+      t = true;
+      Blynk.virtualWrite(V7, 1);
+      led1.setColor(BLYNK_GREEN);
+      Blynk.virtualWrite(V0, voltage);
+      Blynk.virtualWrite(V1, current);
+      Blynk.virtualWrite(V2, power);
+      Blynk.virtualWrite(V5, energy);
+      Blynk.virtualWrite(V6, frequency);
       lcd.setCursor(0, 0);
-      lcd.print("Error Read");
-      lcd.setCursor(j, 1);
-      lcd.write(0);
-      delay(100);
-      lcd.setCursor(j - 1, 1);
-      lcd.print(" ");
-    }
-    led1.setColor(BLYNK_RED);
-    if (t) {
-      t = false;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Error Read");
-      Blynk.virtualWrite(V0, 0);
-      Blynk.virtualWrite(V1, 0);
-      Blynk.virtualWrite(V2, 0);
-      Blynk.virtualWrite(V5, 0);
-      Blynk.virtualWrite(V6, 0);
-    }
-  } else {
-    t = true;
-    Blynk.virtualWrite(V7, 1);
-    led1.setColor(BLYNK_GREEN);
-    Blynk.virtualWrite(V0, voltage);
-    Blynk.virtualWrite(V1, current);
-    Blynk.virtualWrite(V2, power);
-    Blynk.virtualWrite(V5, energy);
-    Blynk.virtualWrite(V6, frequency);
-    lcd.setCursor(0, 0);
-    lcd.print("Voltage: " + String(voltage) + " V  ");
-    lcd.setCursor(0, 1);
-    lcd.print("Current: " + String(current) + " A     ");
-    lcd.setCursor(0, 2);
-    lcd.print("Power: " + String(power) + " W  ");
-    lcd.setCursor(0, 3);
-    lcd.print("Energy: " + String(energy) + " kWh   ");
-  }
-}
-
-
-void loop() {
-  BlynkEdgent.run();
-  timer.run();
-  // if (Firebase.getInt(fbdo, "/status")) { ///Good Code Read from fire base ********
-  //   Serial.println(fbdo.intData());
-  // }
-  if (limit_amp > 0) {
-    if (current > limit_amp) {
-      digitalWrite(relay, LOW);
-      Blynk.virtualWrite(V4, 0);
-      Firebase.setInt(fbdo, "/status", 0);
+      lcd.print("Voltage: " + String(voltage) + " V  ");
+      lcd.setCursor(0, 1);
+      lcd.print("Current: " + String(current) + " A     ");
+      lcd.setCursor(0, 2);
+      lcd.print("Power: " + String(power) + " W  ");
+      lcd.setCursor(0, 3);
+      lcd.print("Energy: " + String(energy) + " kWh   ");
     }
   }
-}
+
+
+  void loop() {
+    BlynkEdgent.run();
+    timer.run();
+    // if (Firebase.getInt(fbdo, "/status")) { ///Good Code Read from fire base ********
+    //   Serial.println(fbdo.intData());
+    // }
+    if (limit_amp > 0) {
+      if (current > limit_amp) {
+        digitalWrite(relay, LOW);
+        Blynk.virtualWrite(V4, 0);
+        Firebase.setInt(fbdo, "/status", 0);
+      }
+    }
+  }
