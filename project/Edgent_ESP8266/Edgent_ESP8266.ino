@@ -4,7 +4,7 @@
 #define BLYNK_TEMPLATE_NAME "Chanakun Project"
 
 
-#define BLYNK_FIRMWARE_VERSION "0.2.4"
+#define BLYNK_FIRMWARE_VERSION "0.2.5"
 #define BLYNK_PRINT Serial
 //#define BLYNK_DEBUG
 #define APP_DEBUG
@@ -78,7 +78,6 @@ BLYNK_CONNECTED() {
   Firebase.setInt(fbdo, "/status", val);
   Blynk.virtualWrite(V4, val);
   digitalWrite(relay, val);
-  
   delay(500);
   connected_ = true;
   lcd.clear();
@@ -118,7 +117,6 @@ void setup() {
 
 void read_firebase() {
   String status = Firebase.getInt(fbdo, F("/status")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str();
-  Serial.println(status);
   digitalWrite(relay, status.toInt());
 }
 
@@ -186,6 +184,9 @@ void readsensor() {
 void loop() {
   BlynkEdgent.run();
   timer.run();
+  // if (Firebase.getInt(fbdo, "/status")) { ///Good Code Read from fire base ********
+  //   Serial.println(fbdo.intData());
+  // }
   if (limit_amp > 0) {
     if (current > limit_amp) {
       digitalWrite(relay, LOW);
