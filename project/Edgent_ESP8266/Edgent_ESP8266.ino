@@ -113,8 +113,7 @@ void setup() {
   Firebase.begin(FIREBASE_HOST, FIREBASE_KEY);
 
 
-  terminal.println(F("Blynk v" BLYNK_VERSION ": Device started"));
-  terminal.println(F("-------------"));
+
 }
 
 
