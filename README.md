@@ -1,4 +1,4 @@
-#Board Memos D1 mini
+#Board Wemos D1 mini
 
 #Sensor
 
